@@ -63,7 +63,7 @@ static NSMutableDictionary *_notificationDesign;
 {
     if (!_notificationDesign)
     {
-        NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:TSDesignFileName ofType:@"json"];
+        NSString *path = [[NSBundle mainBundle] pathForResource:TSDesignFileName ofType:@"json"];
         NSData *data = [NSData dataWithContentsOfFile:path];
         NSAssert(data != nil, @"Could not read TSMessages config file from main bundle with name %@.json", TSDesignFileName);
         
@@ -124,7 +124,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         self.callback = callback;
         self.buttonCallback = buttonCallback;
         
-        CGFloat screenWidth = self.viewController.view.bounds.size.width;
+        //Abhi
+        CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
         CGFloat padding = [self padding];
         
         NSDictionary *current;
@@ -254,6 +255,13 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         {
             _button = [UIButton buttonWithType:UIButtonTypeCustom];
             
+            //Abhi
+            CGFloat fontSize = [[current valueForKey:@"titleFontSize"] floatValue];
+            NSString *fontName = [current valueForKey:@"titleFontName"];
+            
+            
+            [self.button.titleLabel setFont:[UIFont fontWithName:fontName size:fontSize]];
+            
             
             UIImage *buttonBackgroundImage = [UIImage imageNamed:[current valueForKey:@"buttonBackgroundImageName"]];
             
@@ -292,6 +300,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             
             self.button.contentEdgeInsets = UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0);
             [self.button sizeToFit];
+            
+            
             self.button.frame = CGRectMake(screenWidth - padding - self.button.frame.size.width,
                                            0.0,
                                            self.button.frame.size.width,
@@ -303,6 +313,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         }
         
         // Add a border on the bottom (or on the top, depending on the view's postion)
+        
         if (![TSMessage iOS7StyleEnabled])
         {
             _borderView = [[UIView alloc] initWithFrame:CGRectMake(0.0,
@@ -362,7 +373,9 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
 - (CGFloat)updateHeightOfMessageView
 {
     CGFloat currentHeight;
-    CGFloat screenWidth = self.viewController.view.bounds.size.width;
+    
+    //Abhi
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
     CGFloat padding = [self padding];
     
     self.titleLabel.frame = CGRectMake(self.textSpaceLeft,
@@ -373,10 +386,18 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     
     if ([self.subtitle length])
     {
+//        self.contentLabel.frame = CGRectMake(self.textSpaceLeft,
+//                                             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 5.0,
+//                                             screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,
+//                                             0.0);
+        
+        //Abhi
+        
         self.contentLabel.frame = CGRectMake(self.textSpaceLeft,
                                              self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 5.0,
-                                             screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,
+                                             screenWidth- padding - self.textSpaceLeft,
                                              0.0);
+        
         [self.contentLabel sizeToFit];
         
         currentHeight = self.contentLabel.frame.origin.y + self.contentLabel.frame.size.height;
@@ -423,11 +444,22 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     
     if (self.button)
     {
+        
+        //Abhi
         self.button.frame = CGRectMake(self.frame.size.width - self.textSpaceRight,
-                                       round((self.frame.size.height / 2.0) - self.button.frame.size.height / 2.0),
+                                      currentHeight-padding,
                                        self.button.frame.size.width,
                                        self.button.frame.size.height);
+        
+        
+        
+       
+        [self.button sizeToFit];
+        
+        currentHeight += 20;
     }
+    
+    
     
     
     CGRect backgroundFrame = CGRectMake(self.backgroundImageView.frame.origin.x,

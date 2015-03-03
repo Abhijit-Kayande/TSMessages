@@ -350,9 +350,10 @@ __weak static UIViewController *_defaultViewController;
     [UIView animateWithDuration:kTSMessageAnimationDuration animations:^
      {
          currentView.center = fadeOutToPoint;
-         if (![TSMessage iOS7StyleEnabled]) {
+         //Abhi
+//         if (![TSMessage iOS7StyleEnabled]) {
              currentView.alpha = 0.f;
-         }
+//         }
      } completion:^(BOOL finished)
      {
          [currentView removeFromSuperview];
